@@ -1,8 +1,15 @@
 __author__ = 'Nispand'
+import pymysql
 
 def load_dataset():
     "Load the sample dataset."
-    return [[1, 'Jim', 'pecanst'], [2, 'Dominic', 'pecanst'], [3, 'sang', 'null'], [4,'Bryan' ,'Mitchelle st'],[5,'Siddhant','null'],[6,'Aisha','pecan st'],[7,'Simran','mitchelle st'],[8,'Palak','null'][3,'Sang','cooperst'],[8,'null','cooperst']]
+    db = pymysql.connect("localhost","root","root")
+    cur = db.cursor()
+    cur.execute("use associationrulemining")
+    cur.execute("select * from student")
+    data=cur.fetchall()
+    return data
+    #return [[1, 'Jim', 'pecanst'], [2, 'Dominic', 'pecanst'], [3, 'sang', 'null'], [4,'Bryan' ,'Mitchelle st'],[5,'Siddhant','null'],[6,'Aisha','pecan st'],[7,'Simran','mitchelle st'],[8,'Palak','null'][3,'Sang','cooperst'],[8,'null','cooperst']]
 
 def createC1(dataset):
     "Create a list of candidate item sets of size one."
