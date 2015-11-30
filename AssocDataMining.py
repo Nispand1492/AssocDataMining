@@ -8,6 +8,9 @@ def load_dataset():
     cur.execute("use associationrulemining")
     cur.execute("select * from student")
     data=cur.fetchall()
+    #print ("the data is")
+    #print data
+    #print ("data ends")
     return data
     #return [[1, 'Jim', 'pecanst'], [2, 'Dominic', 'pecanst'], [3, 'sang', 'null'], [4,'Bryan' ,'Mitchelle st'],[5,'Siddhant','null'],[6,'Aisha','pecan st'],[7,'Simran','mitchelle st'],[8,'Palak','null'][3,'Sang','cooperst'],[8,'null','cooperst']]
 
@@ -17,22 +20,20 @@ def createC1(dataset):
     for transaction in dataset:
         for item in transaction:
             if not [item] in c1:
-                c1.append([str(item)])
+                c1.append([item])
     c1.sort()
+    #print(c1)
     #frozenset because it will be a ket of a dictionary.
     return map(frozenset, c1)
 
 def scanD(dataset, candidates, min_support):
     "Returns all candidates that meets a minimum support level"
     sscnt = {}
-    print(type(candidates))
     for tid in dataset:
-        candidates = candidates
         for can in candidates:
             if can.issubset(tid):
                 sscnt.setdefault(can, 0)
                 sscnt[can] += 1
-        can = "null"
 
     num_items = float(len(dataset))
     retlist = []
@@ -42,6 +43,7 @@ def scanD(dataset, candidates, min_support):
         if support >= min_support:
             retlist.insert(0, key)
         support_data[key] = support
+    #print(retlist,support_data)
     return retlist, support_data
 
 
@@ -57,10 +59,11 @@ def aprioriGen(freq_sets, k):
             L2.sort()
             if L1 == L2:
                 retList.append(freq_sets[i] | freq_sets[j])
+    #print (retList)
     return retList
 
 def apriori(dataset, minsupport=0.0):
-    #"Generate a list of candidate item sets"
+    "Generate a list of candidate item sets"
     C1 = createC1(dataset)
     D = list(map(set, dataset))
     L1, support_data = scanD(D, C1, minsupport)
@@ -72,10 +75,14 @@ def apriori(dataset, minsupport=0.0):
         support_data.update(supK)
         L.append(Lk)
         k += 1
+    #print (L)
     return L, support_data
 
 dataset = load_dataset()
-print (dataset)
-freq,sup = apriori(dataset)
+a,b = (apriori(dataset))
+
+for x in a :
+    for y in x :
+        print str(y) + "::" + str(b[y]) + "\n"
 
 
