@@ -124,4 +124,4 @@ for x in a :
     for y in x :
         print str(y) + "::" + str(b[y]) + "\n"
 
-generateRules(a,b)
+print generateRules(a,b)
