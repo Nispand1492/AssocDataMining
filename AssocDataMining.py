@@ -1,18 +1,77 @@
 __author__ = 'Nispand'
 import pymysql
 
-def load_dataset():
+db = pymysql.connect("localhost","root","root")
+cur = db.cursor()
+
+def load_dataset(cur):
     "Load the sample dataset."
-    db = pymysql.connect("localhost","root","root")
-    cur = db.cursor()
+    #db = pymysql.connect("localhost","root","root")
+    #cur = db.cursor()
     cur.execute("use associationrulemining")
     cur.execute("select * from location")
     data=cur.fetchall()
-    #print ("the data is")
-    #print data
-    #print ("data ends")
     return data
-    #return [[1, 'Jim', 'pecanst'], [2, 'Dominic', 'pecanst'], [3, 'sang', 'null'], [4,'Bryan' ,'Mitchelle st'],[5,'Siddhant','null'],[6,'Aisha','pecan st'],[7,'Simran','mitchelle st'],[8,'Palak','null'][3,'Sang','cooperst'],[8,'null','cooperst']]
+#new
+def null_values(cur):
+    cur.execute("use associationrulemining")
+    cur.execute("Select * from student where (studentName or address) is NULL")
+    #cur.execute("Select * from location where (City or State or Zip or Street) is NULL")
+    null=cur.fetchall()
+    return null
+
+Null_Record=null_values(cur)
+print Null_Record
+#new
+def Tuples_Null_Set(Null_Record):
+    "Create a list of candidate item sets of size one corresponding to null values."
+    n1 = []
+    for transaction in Null_Record:
+        for item in transaction:
+            if item == None:
+                pass
+            else:
+                n1.append([item])
+    n1.sort()
+    #print(n1)
+    #frozenset because it will be a ket of a dictionary.
+    return map(frozenset, n1)
+
+#n1=Tuples_Null_Set(Null_Record)
+#print n1
+#new
+def aprioriNullGen(freq_sets, k):
+    "Generate the joint transactions from candidate sets"
+    retList = []
+    lenLk = len(freq_sets)
+    for i in range(lenLk):
+        for j in range(i + 1, lenLk):
+            L1 = list(freq_sets[i])[:k - 2]
+            L2 = list(freq_sets[j])[:k - 2]
+            L1.sort()
+            L2.sort()
+            if L1 == L2:
+                retList.append(freq_sets[i] | freq_sets[j])
+    #print (retList)
+    return retList
+#new
+def aprioriNull(dataset, minsupport=0.0):
+    "Generate a list of candidate item sets"
+    C1 = Tuples_Null_Set(Null_Record)
+    D = list(map(set, Null_Record))
+    L1, support_data = scanD(D, C1, minsupport)
+    L = [L1]
+    k = 2
+    while (len(L[k - 2]) > 0):
+        Ck = aprioriGen(L[k - 2], k)
+        Lk, supK = scanD(D, Ck, minsupport)
+        support_data.update(supK)
+        L.append(Lk)
+        k += 1
+    #print (L)
+    return L, support_data
+
+
 
 def createC1(dataset):
     "Create a list of candidate item sets of size one."
@@ -101,10 +160,10 @@ def calc_confidence(freqSet, H, support_data, rules, min_confidence=0.0):
     pruned_H = []
     for conseq in H:
         conf = support_data[freqSet] / support_data[freqSet - conseq]
-        if conf >= min_confidence:
-            print freqSet - conseq, '--->', conseq, 'conf:', conf
-            rules.append((freqSet - conseq, conseq, conf))
-            pruned_H.append(conseq)
+        #if conf >= min_confidence:
+            #print freqSet - conseq, '--->', conseq, 'conf:', conf
+            #rules.append((freqSet - conseq, conseq, conf))
+            #pruned_H.append(conseq)
     return pruned_H
 
 
@@ -117,11 +176,11 @@ def rules_from_conseq(freqSet, H, support_data, rules, min_confidence=0.0):
         if len(Hmp1) > 1:
             rules_from_conseq(freqSet, Hmp1, support_data, rules, min_confidence)
 
-dataset = load_dataset()
+dataset = load_dataset(cur)
 a,b = (apriori(dataset))
 
-for x in a :
-    for y in x :
-        print str(y) + "::" + str(b[y]) + "\n"
+#for x in a :
+    #for y in x :
+      # print str(y) + "::" + str(b[y]) + "\n"
 
-print generateRules(a,b)
+#print generateRules(a,b)
