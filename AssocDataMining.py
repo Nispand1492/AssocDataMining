@@ -21,22 +21,29 @@ def null_values(cur):
     return null
 
 Null_Record=null_values(cur)
-print Null_Record
+#print Null_Record
 #new
 def Tuples_Null_Set(Null_Record):
     "Create a list of candidate item sets of size one corresponding to null values."
     n1 = []
+    a = []
     for transaction in Null_Record:
+        print transaction
         for item in transaction:
+            print item
             if  (not [item] in n1) and (item != None):
-                n1.append([item])
+                a.append(item)
+        print a
+        n1.append([a])
+        a = []
+
     n1.sort()
-    #print(n1)
+    print(n1)
     #frozenset because it will be a ket of a dictionary.
     return map(frozenset, n1)
 
 n1=Tuples_Null_Set(Null_Record)
-print n1
+#print n1
 #new
 def aprioriNullGen(freq_sets, k):
     "Generate the joint transactions from candidate sets"
@@ -50,7 +57,7 @@ def aprioriNullGen(freq_sets, k):
             L2.sort()
             if L1 == L2:
                 retList.append(freq_sets[i] | freq_sets[j])
-    print (retList)
+    #print (retList)
     return retList
 
 
@@ -72,7 +79,7 @@ def  newscanD(Null_Record, candidates, min_support):
         if support >= min_support:
             retlist.insert(0, key)
         support_data[key] = support
-    print(retlist,support_data)
+    #print(retlist,support_data)
     return retlist, support_data
 
 
@@ -90,9 +97,9 @@ def aprioriNull(Null_Record,minsupport=0.0):
         support_data.update(supK)
         L.append(Lk)
         k += 1
-    print (Lk)
-    print ("second parameter of scanD")
-    print supK
+    #print (Lk)
+    #print ("second parameter of scanD")
+    #print supK
     return L, support_data
 
 a,b=aprioriNull(Null_Record,minsupport=0.0)
