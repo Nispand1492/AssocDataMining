@@ -28,17 +28,15 @@ def Tuples_Null_Set(Null_Record):
     n1 = []
     for transaction in Null_Record:
         for item in transaction:
-            if item == None:
-                pass
-            else:
+            if  (not [item] in n1) and (item != None):
                 n1.append([item])
     n1.sort()
     #print(n1)
     #frozenset because it will be a ket of a dictionary.
     return map(frozenset, n1)
 
-#n1=Tuples_Null_Set(Null_Record)
-#print n1
+n1=Tuples_Null_Set(Null_Record)
+print n1
 #new
 def aprioriNullGen(freq_sets, k):
     "Generate the joint transactions from candidate sets"
@@ -52,27 +50,58 @@ def aprioriNullGen(freq_sets, k):
             L2.sort()
             if L1 == L2:
                 retList.append(freq_sets[i] | freq_sets[j])
-    #print (retList)
+    print (retList)
     return retList
+
+
 #new
-def aprioriNull(dataset, minsupport=0.0):
+def  newscanD(Null_Record, candidates, min_support):
+    "Returns all candidates that meets a minimum support level"
+    sscnt = {}
+    for tid in Null_Record:
+        for can in candidates:
+            if can.issubset(tid):
+                sscnt.setdefault(can, 0)
+                sscnt[can] += 1
+
+    num_items = float(len(Null_Record))
+    retlist = []
+    support_data = {}
+    for key in sscnt:
+        support = sscnt[key] / num_items
+        if support >= min_support:
+            retlist.insert(0, key)
+        support_data[key] = support
+    print(retlist,support_data)
+    return retlist, support_data
+
+
+#new
+def aprioriNull(Null_Record,minsupport=0.0):
     "Generate a list of candidate item sets"
     C1 = Tuples_Null_Set(Null_Record)
     D = list(map(set, Null_Record))
-    L1, support_data = scanD(D, C1, minsupport)
+    L1, support_data = newscanD(D, C1, minsupport)
     L = [L1]
     k = 2
     while (len(L[k - 2]) > 0):
-        Ck = aprioriGen(L[k - 2], k)
-        Lk, supK = scanD(D, Ck, minsupport)
+        Ck = aprioriNullGen(L[k - 2], k)
+        Lk, supK =newscanD(D, Ck, minsupport)
         support_data.update(supK)
         L.append(Lk)
         k += 1
-    #print (L)
+    print (Lk)
+    print ("second parameter of scanD")
+    print supK
     return L, support_data
 
+a,b=aprioriNull(Null_Record,minsupport=0.0)
+#print a
+#print ("the support data is")
+#print b
 
 
+#################################################################################################################################
 def createC1(dataset):
     "Create a list of candidate item sets of size one."
     c1 = []
@@ -85,16 +114,16 @@ def createC1(dataset):
     #frozenset because it will be a ket of a dictionary.
     return map(frozenset, c1)
 
-def scanD(dataset, candidates, min_support):
+def scanD(Null_Record, candidates, min_support):
     "Returns all candidates that meets a minimum support level"
     sscnt = {}
-    for tid in dataset:
+    for tid in Null_Record:
         for can in candidates:
             if can.issubset(tid):
                 sscnt.setdefault(can, 0)
                 sscnt[can] += 1
 
-    num_items = float(len(dataset))
+    num_items = float(len(Null_Record))
     retlist = []
     support_data = {}
     for key in sscnt:
@@ -102,7 +131,7 @@ def scanD(dataset, candidates, min_support):
         if support >= min_support:
             retlist.insert(0, key)
         support_data[key] = support
-    #print(retlist,support_data)
+    print(retlist,support_data)
     return retlist, support_data
 
 
@@ -121,7 +150,7 @@ def aprioriGen(freq_sets, k):
     #print (retList)
     return retList
 
-def apriori(dataset, minsupport=0.0):
+"""def apriori(dataset, minsupport=0.0):
     "Generate a list of candidate item sets"
     C1 = createC1(dataset)
     D = list(map(set, dataset))
@@ -130,12 +159,12 @@ def apriori(dataset, minsupport=0.0):
     k = 2
     while (len(L[k - 2]) > 0):
         Ck = aprioriGen(L[k - 2], k)
-        Lk, supK = scanD(D, Ck, minsupport)
-        support_data.update(supK)
-        L.append(Lk)
+        #Lk, supK = scanD(D, Ck, minsupport)
+        #support_data.update(supK)
+        #L.append(Lk)
         k += 1
     #print (L)
-    return L, support_data
+    return L, support_data  """
 
 def generateRules(L, support_data, min_confidence=0.0):
     """Create the association rules
@@ -176,8 +205,8 @@ def rules_from_conseq(freqSet, H, support_data, rules, min_confidence=0.0):
         if len(Hmp1) > 1:
             rules_from_conseq(freqSet, Hmp1, support_data, rules, min_confidence)
 
-dataset = load_dataset(cur)
-a,b = (apriori(dataset))
+#dataset = load_dataset(cur)
+#a,b = (apriori(dataset))
 
 #for x in a :
     #for y in x :
