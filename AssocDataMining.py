@@ -48,7 +48,7 @@ def createC1(dataset):
     #frozenset because it will be a ket of a dictionary.
     return map(frozenset, c1)
 
-def scanD(Null_Record, candidates, min_support):
+def scanD(Null_Record, candidates, min_support = 0.0):
     "Returns all candidates that meets a minimum support level"
     sscnt = {}
     for tid in Null_Record:
@@ -96,7 +96,7 @@ def apriori(dataset, minsupport=0.0):
         k += 1
     return L, support_data
 
-def generateRules(L, support_data, min_confidence=0.8):
+def generateRules(L, support_data, min_confidence=0.0):
     """Create the association rules
     L: list of frequent item sets
     support_data: support data for those itemsets
@@ -157,7 +157,9 @@ a_r=[]
 for x in n1:
     r= search_results(x,result)
     a_r.append(r)
+
 for a in a_r:
     print a
+
 
 

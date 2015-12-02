@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b08673de-5b73-40ea-a34d-d48e2a0a6fab" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Database Scripts/EB-build-location.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Database Scripts/Schema defintion.sql" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AssocDataMining.py" afterPath="$PROJECT_DIR$/AssocDataMining.py" />
     </list>
@@ -29,8 +27,8 @@
       <file leaf-file-name="AssocDataMining.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AssocDataMining.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.71022725">
-              <caret line="163" column="0" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
+            <state vertical-scroll-proportion="7.7272725">
+              <caret line="160" column="13" selection-start-line="160" selection-start-column="13" selection-end-line="160" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -299,7 +297,13 @@
       <option name="project" value="LOCAL" />
       <updated>1449028214237</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Database Updated">
+      <created>1449031235124</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1449031235124</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -342,7 +346,8 @@
     <MESSAGE value="set of null columns formed" />
     <MESSAGE value="confidence printed for null values" />
     <MESSAGE value="formatting done" />
-    <option name="LAST_COMMIT_MESSAGE" value="formatting done" />
+    <MESSAGE value="Database Updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Database Updated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -412,8 +417,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AssocDataMining.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.71022725">
-          <caret line="163" column="0" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
+        <state vertical-scroll-proportion="7.7272725">
+          <caret line="160" column="13" selection-start-line="160" selection-start-column="13" selection-end-line="160" selection-end-column="13" />
           <folding />
         </state>
       </provider>
