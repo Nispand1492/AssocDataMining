@@ -3,24 +3,29 @@ import pymysql
 
 db = pymysql.connect("localhost","root","root")
 cur = db.cursor()
-
+print "Here"
 def load_dataset(cur):
     "Load the sample dataset."
     #db = pymysql.connect("localhost","root","root")
     #cur = db.cursor()
     cur.execute("use associationrulemining")
-    cur.execute("select * from location")
-    data=cur.fetchall()
+    cur.execute("select * from locations")
+    data = cur.fetchall()
+   # print data
     return data
 #new
+
 def null_values(cur):
+    print "Got into null_values"
     cur.execute("use associationrulemining")
-    cur.execute("Select * from student where (studentName or address) is NULL")
+    cur.execute("select * from locations where City is Null or State is Null or Zip is Null")
     #cur.execute("Select * from location where (City or State or Zip or Street) is NULL")
     null=cur.fetchall()
+    #print null
+    print "Exit from null_values"
     return null
 
-Null_Record=null_values(cur)
+
 #print Null_Record
 #new
 def Tuples_Null_Set(Null_Record):
@@ -31,20 +36,21 @@ def Tuples_Null_Set(Null_Record):
         print transaction
         for item in transaction:
             print item
-            if  (not [item] in n1) and (item != None):
+            if (not [item] in n1) and (item != None):
                 a.append(item)
         print a
-        n1.append([a])
+        n1.append(a)
         a = []
 
     n1.sort()
-    print(n1)
+   # print(n1)
     #frozenset because it will be a ket of a dictionary.
     return map(frozenset, n1)
 
-n1=Tuples_Null_Set(Null_Record)
+
 #print n1
 #new
+"""
 def aprioriNullGen(freq_sets, k):
     "Generate the joint transactions from candidate sets"
     retList = []
@@ -59,8 +65,8 @@ def aprioriNullGen(freq_sets, k):
                 retList.append(freq_sets[i] | freq_sets[j])
     #print (retList)
     return retList
-
-
+"""
+"""
 #new
 def  newscanD(Null_Record, candidates, min_support):
     "Returns all candidates that meets a minimum support level"
@@ -81,9 +87,10 @@ def  newscanD(Null_Record, candidates, min_support):
         support_data[key] = support
     #print(retlist,support_data)
     return retlist, support_data
-
+"""
 
 #new
+"""
 def aprioriNull(Null_Record,minsupport=0.0):
     "Generate a list of candidate item sets"
     C1 = Tuples_Null_Set(Null_Record)
@@ -101,8 +108,7 @@ def aprioriNull(Null_Record,minsupport=0.0):
     #print ("second parameter of scanD")
     #print supK
     return L, support_data
-
-a,b=aprioriNull(Null_Record,minsupport=0.0)
+"""
 #print a
 #print ("the support data is")
 #print b
@@ -138,7 +144,7 @@ def scanD(Null_Record, candidates, min_support):
         if support >= min_support:
             retlist.insert(0, key)
         support_data[key] = support
-    print(retlist,support_data)
+    #print(retlist,support_data)
     return retlist, support_data
 
 
@@ -157,7 +163,7 @@ def aprioriGen(freq_sets, k):
     #print (retList)
     return retList
 
-"""def apriori(dataset, minsupport=0.0):
+def apriori(dataset, minsupport=0.0):
     "Generate a list of candidate item sets"
     C1 = createC1(dataset)
     D = list(map(set, dataset))
@@ -166,14 +172,14 @@ def aprioriGen(freq_sets, k):
     k = 2
     while (len(L[k - 2]) > 0):
         Ck = aprioriGen(L[k - 2], k)
-        #Lk, supK = scanD(D, Ck, minsupport)
-        #support_data.update(supK)
-        #L.append(Lk)
+        Lk, supK = scanD(D, Ck, minsupport)
+        support_data.update(supK)
+        L.append(Lk)
         k += 1
     #print (L)
-    return L, support_data  """
+    return L, support_data
 
-def generateRules(L, support_data, min_confidence=0.0):
+def generateRules(L, support_data, min_confidence=0.8):
     """Create the association rules
     L: list of frequent item sets
     support_data: support data for those itemsets
@@ -183,11 +189,12 @@ def generateRules(L, support_data, min_confidence=0.0):
     for i in range(1, len(L)):
         for freqSet in L[i]:
             H1 = [frozenset([item]) for item in freqSet]
-            print "freqSet", freqSet, 'H1', H1
+            #print "freqSet", freqSet, 'H1', H1
             if (i > 1):
                 rules_from_conseq(freqSet, H1, support_data, rules, min_confidence)
             else:
                 calc_confidence(freqSet, H1, support_data, rules, min_confidence)
+
     return rules
 
 
@@ -195,11 +202,15 @@ def calc_confidence(freqSet, H, support_data, rules, min_confidence=0.0):
     "Evaluate the rule generated"
     pruned_H = []
     for conseq in H:
-        conf = support_data[freqSet] / support_data[freqSet - conseq]
-        #if conf >= min_confidence:
+        try :
+            conf = support_data[freqSet] / support_data[freqSet - conseq]
+        except :
+            pass
+        if conf >= min_confidence:
             #print freqSet - conseq, '--->', conseq, 'conf:', conf
-            #rules.append((freqSet - conseq, conseq, conf))
-            #pruned_H.append(conseq)
+            rules.append((freqSet - conseq, conseq, conf))
+            pruned_H.append(conseq)
+
     return pruned_H
 
 
@@ -212,11 +223,49 @@ def rules_from_conseq(freqSet, H, support_data, rules, min_confidence=0.0):
         if len(Hmp1) > 1:
             rules_from_conseq(freqSet, Hmp1, support_data, rules, min_confidence)
 
-#dataset = load_dataset(cur)
-#a,b = (apriori(dataset))
+
+
+
+
+
+dataset = load_dataset(cur)
+a,b = apriori(dataset)
 
 #for x in a :
     #for y in x :
       # print str(y) + "::" + str(b[y]) + "\n"
 
-#print generateRules(a,b)
+result = generateRules(a,b)
+Null_Record=null_values(cur)
+n1=Tuples_Null_Set(Null_Record)
+"""
+r_l =[]
+for x in n1:
+    remain = search_item(x,result)
+    if len(remain)!=0:
+"""
+
+
+
+
+a_r=[]
+def search_results(x,result):
+    d_l=[]
+    for y in result:
+        if x in y:
+
+            d_l.append(y)
+    return d_l
+for x in n1:
+    r= search_results(x,result)
+    a_r.append(r)
+print a_r
+
+
+
+
+
+
+
+
+
