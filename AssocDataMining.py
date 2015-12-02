@@ -3,7 +3,6 @@ import pymysql
 
 db = pymysql.connect("localhost","root","root")
 cur = db.cursor()
-print "Here"
 def load_dataset(cur):
     "Load the sample dataset."
     cur.execute("use associationrulemining")
@@ -34,7 +33,6 @@ def Tuples_Null_Set(Null_Record):
         print a
         n1.append(a)
         a = []
-
     n1.sort()
     #frozenset because it will be a ket of a dictionary.
     return map(frozenset, n1)
@@ -58,7 +56,6 @@ def scanD(Null_Record, candidates, min_support):
             if can.issubset(tid):
                 sscnt.setdefault(can, 0)
                 sscnt[can] += 1
-
     num_items = float(len(Null_Record))
     retlist = []
     support_data = {}
@@ -161,6 +158,6 @@ for x in n1:
     r= search_results(x,result)
     a_r.append(r)
 for a in a_r:
-    print frozenset(a)
+    print a
 
 
